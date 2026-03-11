@@ -1,0 +1,19 @@
+Add near top of herald.py:
+import shutil
+from datetime import datetime
+
+Then before writing fresh promo output:
+
+OUT = Path("output/promo_bundle")
+ARCHIVE_ROOT = Path("output_archive")
+
+if OUT.exists() and any(OUT.iterdir()):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    archive_dst = ARCHIVE_ROOT / f"promo_bundle_{timestamp}"
+    ARCHIVE_ROOT.mkdir(parents=True, exist_ok=True)
+    if archive_dst.exists():
+        shutil.rmtree(archive_dst)
+    shutil.copytree(OUT, archive_dst)
+    shutil.rmtree(OUT)
+
+OUT.mkdir(parents=True, exist_ok=True)
