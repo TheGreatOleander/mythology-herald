@@ -1,12 +1,12 @@
-# Mythology Herald v0.3
+# Mythology Herald v0.4
 
-Consumes `episode_bundle` and `media_bundle` to produce a richer `promo_bundle`.
+Consumes `episode_bundle` and `media_bundle` to produce a wave-based `promo_bundle`.
 
-## New in v0.3
-- Reads `metadata.json` for tags and tone
-- Reads `media_manifest.json` for media references
-- Produces platform-specific promo files
-- Generates a simple campaign plan based on bundle + media manifest
+## New in v0.4
+- Reads `campaign_plan.json` style data it generates
+- Produces platform-specific promo files by wave
+- Adds YouTube Shorts and Instagram Reels variants
+- Emits `wave_manifest.json`
 
 ## Run
 ```bash

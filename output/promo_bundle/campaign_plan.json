@@ -1,37 +1,18 @@
-{
-  "episode_id": "ep_0001",
-  "title": "The Origin of the Impossible Map",
-  "campaign_waves": [
-    {
-      "platform": "youtube",
-      "asset": "youtube_description.txt",
-      "timing": "launch"
-    },
-    {
-      "platform": "tiktok",
-      "asset": "tiktok_caption.txt",
-      "timing": "same_day"
-    },
-    {
-      "platform": "instagram",
-      "asset": "instagram_caption.txt",
-      "timing": "same_day_evening"
-    },
-    {
-      "platform": "x",
-      "asset": "x_thread.txt",
-      "timing": "same_day_evening"
-    }
-  ],
-  "media_inputs": {
-    "video": "final_video.mp4",
-    "thumbnail": "thumbnail.png"
+[
+  {
+    "wave": 1,
+    "asset": "youtube_description.txt"
   },
-  "tone": "cinematic documentary",
-  "tags": [
-    "mythology",
-    "mystery",
-    "archive",
-    "map"
-  ]
-}
+  {
+    "wave": 2,
+    "asset": "tiktok_caption.txt"
+  },
+  {
+    "wave": 2,
+    "asset": "instagram_caption.txt"
+  },
+  {
+    "wave": 3,
+    "asset": "x_thread.txt"
+  }
+]

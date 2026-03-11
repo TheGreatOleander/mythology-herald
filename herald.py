@@ -1,79 +1,62 @@
-import json
+
+import json, shutil
 from pathlib import Path
 
 EP = Path("input/episode_bundle")
 MEDIA = Path("input/media_bundle")
 OUT = Path("output/promo_bundle")
+
+# deterministic run
+if OUT.exists():
+    shutil.rmtree(OUT)
+
 OUT.mkdir(parents=True, exist_ok=True)
+WAVES = OUT/"waves"
+WAVES.mkdir()
 
-bundle = json.load(open(EP / "bundle.json"))
-metadata = json.load(open(EP / "metadata.json")) if (EP / "metadata.json").exists() else {}
-media = json.load(open(MEDIA / "media_manifest.json")) if (MEDIA / "media_manifest.json").exists() else {}
+bundle=json.load(open(EP/"bundle.json"))
+metadata=json.load(open(EP/"metadata.json"))
+media=json.load(open(MEDIA/"media_manifest.json"))
 
-title = bundle.get("title", "Untitled Episode")
-episode_id = bundle.get("episode_id", "unknown_episode")
-topic = bundle.get("topic", title)
-series = metadata.get("series", "Mythology")
-tags = metadata.get("tags", [])
-tone = metadata.get("tone", "cinematic")
-video_path = media.get("paths", {}).get("final_video", "final_video.mp4")
-thumbnail_path = media.get("paths", {}).get("thumbnail", "thumbnail.png")
+title=bundle["title"]
+tags=metadata["tags"]
+episode_id=bundle["episode_id"]
 
-youtube_description = f"""{title}
+youtube=f"{title}\n\n#mythology #story"
+tiktok=f"{title} #shorts"
+instagram=f"{title}\n#mythology"
+x_thread=f"New episode: {title}"
 
-A new episode from Mythology Engine explores: {topic}.
-Series: {series}
-Tone: {tone}
+(OUT/"youtube_description.txt").write_text(youtube)
+(OUT/"tiktok_caption.txt").write_text(tiktok)
+(OUT/"instagram_caption.txt").write_text(instagram)
+(OUT/"x_thread.txt").write_text(x_thread)
+(OUT/"hashtags.txt").write_text(" ".join(f"#{t}" for t in tags))
 
-This release includes visual assets prepared by Mythology Forge.
+campaign=[
+ {"wave":1,"asset":"youtube_description.txt"},
+ {"wave":2,"asset":"tiktok_caption.txt"},
+ {"wave":2,"asset":"instagram_caption.txt"},
+ {"wave":3,"asset":"x_thread.txt"}
+]
 
-#mythology #mystery #cinematic
-"""
-tiktok_caption = f"{title} — hidden mystery from the archive. #{' #'.join(tags[:3])}" if tags else f"{title} — hidden mystery from the archive. #mythology #mystery"
-instagram_caption = f"{title}\n\nA {tone} mystery from {series}.\n\n" + (" ".join(f"#{t}" for t in tags[:5]) if tags else "#mythology #archive")
-x_thread = f"1/ A new Mythology Engine episode explores: {title}\n2/ Topic: {topic}\n3/ Visuals prepared by Mythology Forge."
+json.dump(campaign, open(OUT/"campaign_plan.json","w"), indent=2)
 
-(OUT / "youtube_description.txt").write_text(youtube_description, encoding="utf-8")
-(OUT / "tiktok_caption.txt").write_text(tiktok_caption, encoding="utf-8")
-(OUT / "instagram_caption.txt").write_text(instagram_caption, encoding="utf-8")
-(OUT / "x_thread.txt").write_text(x_thread, encoding="utf-8")
-(OUT / "hashtags.txt").write_text(" ".join(f"#{t}" for t in tags) if tags else "#mythology #mystery #cinematic", encoding="utf-8")
+for wave in [1,2,3]:
+    wd=WAVES/f"wave_{wave:02}"
+    wd.mkdir()
+    for c in campaign:
+        if c["wave"]==wave:
+            src=OUT/c["asset"]
+            dst=wd/c["asset"]
+            dst.write_text(src.read_text())
 
-campaign_plan = {
-    "episode_id": episode_id,
-    "title": title,
-    "campaign_waves": [
-        {"platform": "youtube", "asset": "youtube_description.txt", "timing": "launch"},
-        {"platform": "tiktok", "asset": "tiktok_caption.txt", "timing": "same_day"},
-        {"platform": "instagram", "asset": "instagram_caption.txt", "timing": "same_day_evening"},
-        {"platform": "x", "asset": "x_thread.txt", "timing": "same_day_evening"}
-    ],
-    "media_inputs": {
-        "video": video_path,
-        "thumbnail": thumbnail_path
-    },
-    "tone": tone,
-    "tags": tags
+manifest={
+ "bundle_version":"1.0",
+ "source_episode_id":episode_id,
+ "generated_by":"Mythology Herald"
 }
-json.dump(campaign_plan, open(OUT / "campaign_plan.json", "w"), indent=2)
 
-manifest = {
-    "bundle_version": "1.0",
-    "source_episode_id": episode_id,
-    "generated_by": "Mythology Herald",
-    "derived_from": {
-        "bundle": "input/episode_bundle/bundle.json",
-        "metadata": "input/episode_bundle/metadata.json",
-        "media_manifest": "input/media_bundle/media_manifest.json"
-    },
-    "paths": {
-        "youtube_description": "youtube_description.txt",
-        "tiktok_caption": "tiktok_caption.txt",
-        "instagram_caption": "instagram_caption.txt",
-        "x_thread": "x_thread.txt",
-        "hashtags": "hashtags.txt",
-        "campaign_plan": "campaign_plan.json"
-    }
-}
-json.dump(manifest, open(OUT / "promo_manifest.json", "w"), indent=2)
-print("promo_bundle v0.3 created")
+json.dump(manifest, open(OUT/"promo_manifest.json","w"), indent=2)
+
+print("promo_bundle v0.5 created (deterministic)")
