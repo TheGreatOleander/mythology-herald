@@ -1,0 +1,8 @@
+{
+  "youtube": ["youtube_description.txt", "hashtags.txt"],
+  "youtube_shorts": ["youtube_shorts_caption.txt", "hashtags.txt"],
+  "tiktok": ["tiktok_caption.txt", "hashtags.txt"],
+  "instagram": ["instagram_caption.txt", "hashtags.txt"],
+  "instagram_reels": ["instagram_reels_caption.txt", "hashtags.txt"],
+  "x": ["x_thread.txt", "hashtags.txt"]
+}
