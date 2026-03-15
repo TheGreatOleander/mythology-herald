@@ -1,0 +1,6 @@
+
+{
+  "title": "Mythology Herald Promo Bundle",
+  "type": "object",
+  "required": ["bundle_version","run_id","project","generated_at","platforms"]
+}
